@@ -30,8 +30,14 @@ theme:
     - content.code.annotate
     - announce.dismiss
 
+
 extra_css:
   - stylesheets/extra.css
+
+extra:
+  generator: false
+
+copyright: Built by rathinadevan
 
 nav:
   - Home: index.md
