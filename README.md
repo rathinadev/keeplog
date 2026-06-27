@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/rathinadev/keeplog/actions/workflows/python-app.yml/badge.svg)](https://github.com/rathinadev/keeplog/actions/workflows/python-app.yml)
 [![PyPI](https://img.shields.io/pypi/v/keeplog)](https://pypi.org/project/keeplog/)
-[![Python](https://img.shields.io/badge/python-%3E%3D3.9-blue)](https://pypi.org/project/keeplog/)
+[![Python](https://img.shields.io/pypi/pyversions/keeplog)](https://pypi.org/project/keeplog/)
 [![License](https://img.shields.io/pypi/l/keeplog)](https://github.com/rathinadev/keeplog/blob/main/LICENSE)
 
 **Terminal session logger with full-text search.**
