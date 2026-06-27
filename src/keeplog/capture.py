@@ -79,6 +79,10 @@ def _handle_sigwinch(master_fd):
 
 
 def record_session(mode: str = "full"):
+    if not sys.stdin.isatty():
+        print("keeplog record requires a terminal. Run this directly in your shell, not via pipe/script.")
+        return
+
     shell = _find_shell()
     shell_bin = _shell_name(shell)
 
