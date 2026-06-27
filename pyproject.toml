@@ -9,6 +9,13 @@ description = "Terminal session logger with full-text search"
 license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+]
 dependencies = []
 
 [project.optional-dependencies]
