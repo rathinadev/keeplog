@@ -1,5 +1,7 @@
 import os
 import sys
+import shutil
+import sysconfig
 
 
 def _shell_rc() -> str:
@@ -9,26 +11,52 @@ def _shell_rc() -> str:
     return os.path.expanduser("~/.bashrc")
 
 
+def _needs_path_fix() -> tuple:
+    bin_dir = sysconfig.get_path("scripts")
+    path_dirs = os.environ.get("PATH", "").split(":")
+    if bin_dir in path_dirs:
+        return False, None
+    return True, bin_dir
+
+
 _INSTALL_LINE = '\nif [[ -z "$KEEPLOG_ACTIVE" ]]; then export KEEPLOG_ACTIVE=1; exec keeplog record; fi\n'
 
 
 def install():
     rc = _shell_rc()
-    line = _INSTALL_LINE
+    lines = []
+
+    needs_fix, bin_dir = _needs_path_fix()
+    if needs_fix and bin_dir:
+        path_line = f'\nexport PATH="{bin_dir}:$PATH"'
+        if os.path.exists(rc):
+            with open(rc) as f:
+                content = f.read()
+            if bin_dir not in content:
+                lines.append(path_line)
+        else:
+            lines.append(path_line.strip())
 
     if os.path.exists(rc):
         with open(rc) as f:
             content = f.read()
-        if "KEEPLOG_ACTIVE" in content:
+        if "KEEPLOG_ACTIVE" in content and not needs_fix:
             print(f"Already installed in {rc}")
             return
         with open(rc, "a") as f:
-            f.write(line)
+            for line in lines:
+                f.write(line + "\n")
+            if "KEEPLOG_ACTIVE" not in content:
+                f.write(_INSTALL_LINE)
     else:
         with open(rc, "w") as f:
-            f.write(line)
+            for line in lines:
+                f.write(line + "\n")
+            f.write(_INSTALL_LINE.strip() + "\n")
 
     print(f"Installed keeplog hook in {rc}")
+    if needs_fix and bin_dir:
+        print(f"Added {bin_dir} to PATH")
     print("Restart your terminal or run: source " + rc)
 
 
@@ -37,9 +65,9 @@ def uninstall():
     if not os.path.exists(rc):
         return
     with open(rc) as f:
-        lines = f.readlines()
-    new_lines = [l for l in lines if "KEEPLOG_ACTIVE" not in l]
-    if len(new_lines) == len(lines):
+        all_lines = f.readlines()
+    new_lines = [l for l in all_lines if "KEEPLOG_ACTIVE" not in l]
+    if len(new_lines) == len(all_lines):
         print("Not installed")
         return
     with open(rc, "w") as f:
