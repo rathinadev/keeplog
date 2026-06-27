@@ -12,3 +12,4 @@ venv/
 *.db
 MEMORY.md
 AGENTS.md
+site/
