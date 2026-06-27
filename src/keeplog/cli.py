@@ -9,6 +9,7 @@ from keeplog.db import (
 from keeplog.capture import record_session
 from keeplog.install import install, uninstall
 from keeplog.search import search_interactive
+from keeplog.config import load as load_config, save as save_config, get as get_config
 
 
 def main():
@@ -24,7 +25,8 @@ def main():
         print("  status              Show stats")
         print("  last                Show last session")
         print("  export              Export all data as JSON")
-        print("  clear               Clear old data (older than 30 days)")
+        print("  clear <days>        Clear old data (default 30 days)")
+        print("  config [key val]    Get/set configuration")
         print("  init                Initialize database")
         return
 
@@ -36,7 +38,9 @@ def main():
 
     elif cmd == "record":
         signal.signal(signal.SIGINT, signal.SIG_DFL)
-        mode = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] == "light" else "full"
+        mode = sys.argv[2] if len(sys.argv) > 2 else get_config("mode")
+        from keeplog.db import clear_old
+        clear_old(get_config("retention_days"))
         record_session(mode)
 
     elif cmd == "search":
@@ -95,6 +99,18 @@ def main():
 
     elif cmd == "uninstall":
         uninstall()
+
+    elif cmd == "config":
+        cfg = load_config()
+        if len(sys.argv) >= 4:
+            save_config({sys.argv[2]: sys.argv[3]})
+            print(f"Set {sys.argv[2]} = {sys.argv[3]}")
+        else:
+            for k, v in cfg.items():
+                print(f"  {k} = {v}")
+
+    else:
+        print(f"Unknown command: {cmd}")
 
 
 def _fmt_bytes(b: int) -> str:
