@@ -1,0 +1,21 @@
+site_name: keeplog
+site_description: Terminal session logger with full-text search
+site_url: https://rathinadev.github.io/keeplog/
+repo_url: https://github.com/rathinadev/keeplog
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Commands: commands.md
+  - Configuration: config.md
+  - Development: development.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
