@@ -7,7 +7,7 @@ from keeplog.db import (
     get_stats, get_last_session, export_all, clear_old,
 )
 from keeplog.capture import record_session
-from keeplog.install import install, uninstall
+from keeplog.install import setup_hook, remove_hook
 from keeplog.search import search_interactive
 from keeplog.config import load as load_config, save as save_config, get as get_config
 
@@ -17,8 +17,8 @@ def main():
         print("Usage: keeplog <command>")
         print("Commands:")
         print("  record              Start recording session")
-        print("  install             Add keeplog to shell rc")
-        print("  uninstall           Remove keeplog from shell rc")
+        print("  setup               Add auto-start hook to shell rc")
+        print("  remove              Remove auto-start hook from shell rc")
         print("  search <query>      Interactive fzf search")
         print("  recent              Show recent commands")
         print("  get <id>            Show full command details")
@@ -94,11 +94,11 @@ def main():
         clear_old(days)
         print(f"Cleared data older than {days} days")
 
-    elif cmd == "install":
-        install()
+    elif cmd == "setup":
+        setup_hook()
 
-    elif cmd == "uninstall":
-        uninstall()
+    elif cmd == "remove":
+        remove_hook()
 
     elif cmd == "config":
         cfg = load_config()

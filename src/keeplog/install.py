@@ -1,6 +1,5 @@
 import os
 import sys
-import shutil
 import sysconfig
 
 
@@ -19,10 +18,10 @@ def _needs_path_fix() -> tuple:
     return True, bin_dir
 
 
-_INSTALL_LINE = '\nif [[ -z "$KEEPLOG_ACTIVE" ]]; then export KEEPLOG_ACTIVE=1; exec keeplog record; fi\n'
+_HOOK_LINE = '\nif [[ -z "$KEEPLOG_ACTIVE" ]]; then export KEEPLOG_ACTIVE=1; exec keeplog record; fi\n'
 
 
-def install():
+def setup_hook():
     rc = _shell_rc()
     lines = []
 
@@ -41,26 +40,27 @@ def install():
         with open(rc) as f:
             content = f.read()
         if "KEEPLOG_ACTIVE" in content and not needs_fix:
-            print(f"Already installed in {rc}")
+            print(f"Already set up in {rc}")
             return
         with open(rc, "a") as f:
             for line in lines:
                 f.write(line + "\n")
             if "KEEPLOG_ACTIVE" not in content:
-                f.write(_INSTALL_LINE)
+                f.write(_HOOK_LINE)
     else:
         with open(rc, "w") as f:
             for line in lines:
                 f.write(line + "\n")
-            f.write(_INSTALL_LINE.strip() + "\n")
+            f.write(_HOOK_LINE.strip() + "\n")
 
-    print(f"Installed keeplog hook in {rc}")
+    print(f"Setup complete in {rc}")
     if needs_fix and bin_dir:
-        print(f"Added {bin_dir} to PATH")
+        print(f"  Added {bin_dir} to PATH")
+    print(f"  Auto-start hook added")
     print("Restart your terminal or run: source " + rc)
 
 
-def uninstall():
+def remove_hook():
     rc = _shell_rc()
     if not os.path.exists(rc):
         return
@@ -68,7 +68,7 @@ def uninstall():
         all_lines = f.readlines()
     new_lines = [l for l in all_lines if "KEEPLOG_ACTIVE" not in l]
     if len(new_lines) == len(all_lines):
-        print("Not installed")
+        print("Not set up")
         return
     with open(rc, "w") as f:
         f.writelines(new_lines)

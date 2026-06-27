@@ -31,7 +31,7 @@ echo "==> Initializing database..."
 python3 -m keeplog init
 
 echo "==> Adding to shell rc..."
-python3 -m keeplog install
+python3 -m keeplog setup
 
 echo ""
 echo "Done! Restart your terminal or run: source ~/.zshrc"
