@@ -9,6 +9,7 @@ build/
 .venv
 venv/
 *.sqlite
+*.sqlite3
 *.db
 MEMORY.md
 AGENTS.md
