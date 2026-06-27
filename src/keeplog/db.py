@@ -24,6 +24,15 @@ def _get_conn() -> sqlite3.Connection:
     return conn
 
 
+def _db_exists() -> bool:
+    return DB_PATH.exists()
+
+
+def ensure_db():
+    if not _db_exists():
+        init_db()
+
+
 def init_db():
     conn = _get_conn()
     conn.executescript("""
@@ -75,6 +84,7 @@ def init_db():
 
 
 def create_session(hostname: str = "") -> int:
+    ensure_db()
     conn = _get_conn()
     cur = conn.execute(
         "INSERT INTO sessions (hostname) VALUES (?)", (hostname or "",)
@@ -123,6 +133,8 @@ def save_command(
 
 
 def search(query: str, limit: int = 50) -> list:
+    if not _db_exists():
+        return []
     conn = _get_conn()
     rows = conn.execute(
         """SELECT c.id, c.command, c.cwd, c.exit_code, c.timestamp, c.duration_ms, c.mode,
@@ -140,6 +152,8 @@ def search(query: str, limit: int = 50) -> list:
 
 
 def list_recent(limit: int = 20) -> list:
+    if not _db_exists():
+        return []
     conn = _get_conn()
     rows = conn.execute(
         """SELECT c.id, c.command, c.cwd, c.exit_code, c.timestamp, c.duration_ms, c.mode,
@@ -155,6 +169,8 @@ def list_recent(limit: int = 20) -> list:
 
 
 def get_command(command_id: int) -> Optional[dict]:
+    if not _db_exists():
+        return None
     conn = _get_conn()
     row = conn.execute(
         """SELECT c.*, o.content AS output
@@ -165,3 +181,73 @@ def get_command(command_id: int) -> Optional[dict]:
     ).fetchone()
     conn.close()
     return dict(row) if row else None
+
+
+def get_stats() -> dict:
+    result = {"commands": 0, "sessions": 0, "storage_bytes": 0, "last_command": None}
+    if not _db_exists():
+        return result
+    conn = _get_conn()
+    cur = conn.execute("SELECT COUNT(*) FROM commands")
+    result["commands"] = cur.fetchone()[0]
+    cur = conn.execute("SELECT COUNT(*) FROM sessions")
+    result["sessions"] = cur.fetchone()[0]
+    cur = conn.execute("SELECT SUM(LENGTH(content)) FROM output")
+    result["storage_bytes"] = cur.fetchone()[0] or 0
+    cur = conn.execute(
+        "SELECT timestamp FROM commands ORDER BY timestamp DESC LIMIT 1"
+    )
+    row = cur.fetchone()
+    result["last_command"] = row[0] if row else None
+    conn.close()
+    return result
+
+
+def get_last_session() -> Optional[list]:
+    if not _db_exists():
+        return None
+    conn = _get_conn()
+    row = conn.execute(
+        """SELECT c.*, o.content AS output
+           FROM commands c
+           LEFT JOIN output o ON o.command_id = c.id
+           WHERE c.session_id = (SELECT id FROM sessions ORDER BY id DESC LIMIT 1)
+           ORDER BY c.sequence ASC"""
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in row] if row else None
+
+
+def export_all() -> list:
+    if not _db_exists():
+        return []
+    conn = _get_conn()
+    rows = conn.execute(
+        """SELECT c.*, o.content AS output
+           FROM commands c
+           LEFT JOIN output o ON o.command_id = c.id
+           ORDER BY c.timestamp ASC"""
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def clear_old(before_days: int = 30):
+    if not _db_exists():
+        return
+    conn = _get_conn()
+    conn.execute(
+        """DELETE FROM output WHERE command_id IN (
+            SELECT id FROM commands WHERE timestamp < datetime('now', ?)
+        )""",
+        (f"-{before_days} days",),
+    )
+    conn.execute(
+        "DELETE FROM commands WHERE timestamp < datetime('now', ?)",
+        (f"-{before_days} days",),
+    )
+    conn.execute(
+        "DELETE FROM sessions WHERE id NOT IN (SELECT DISTINCT session_id FROM commands)"
+    )
+    conn.commit()
+    conn.close()

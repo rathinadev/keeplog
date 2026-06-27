@@ -100,6 +100,7 @@ def record_session(mode: str = "full"):
         os.environ["KEEPLOG_CTRL_FD"] = str(ctrl_w)
         os.environ["KEEPLOG_SESSION_ID"] = str(session_id)
         os.environ["KEEPLOG_MODE"] = mode
+        os.environ["KEEPLOG_ACTIVE"] = "1"
         os.close(ctrl_r)
 
         if shell_bin == "zsh":
