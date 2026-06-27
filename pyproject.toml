@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "keeplog"
+version = "0.1.0"
+description = "Terminal session logger with full-text search"
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+keeplog = "keeplog.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/keeplog"]
