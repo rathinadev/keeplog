@@ -1,18 +1,26 @@
 import sys
-from keeplog.db import init_db, create_session, end_session, save_command, search, list_recent, get_command
+import signal
+
+from keeplog.db import init_db, search, list_recent, get_command
+from keeplog.capture import record_session
 
 
 def main():
     if len(sys.argv) < 2:
         print("Usage: keeplog <command>")
-        print("Commands: init, search <query>, recent, get <id>")
+        print("Commands: record, search <query>, recent, get <id>, init")
         return
 
     cmd = sys.argv[1]
 
     if cmd == "init":
         init_db()
-        print("Database initialized at ~/.local/share/keeplog/logs.db")
+        print("Database initialized")
+
+    elif cmd == "record":
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+        mode = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] == "light" else "full"
+        record_session(mode)
 
     elif cmd == "search":
         if len(sys.argv) < 3:
@@ -20,12 +28,16 @@ def main():
             return
         results = search(sys.argv[2])
         for r in results:
-            print(f"[{r['timestamp']}] {r['command']}")
+            preview = r["output_preview"] or ""
+            nl = preview.find("\n")
+            if nl != -1:
+                preview = preview[:nl] + "..."
+            print(f"  [{r['id']}] {r['command']}  ({preview})")
 
     elif cmd == "recent":
         results = list_recent()
         for r in results:
-            print(f"[{r['timestamp']}] {r['command']}")
+            print(f"  [{r['id']}] {r['command']}")
 
     elif cmd == "get":
         if len(sys.argv) < 3:
@@ -37,7 +49,7 @@ def main():
             print(f"CWD: {cmd_data['cwd']}")
             print(f"Exit: {cmd_data['exit_code']}")
             print(f"Time: {cmd_data['timestamp']}")
-            if cmd_data['output']:
+            if cmd_data.get("output"):
                 print(f"Output:\n{cmd_data['output']}")
         else:
             print("Not found")
