@@ -11,3 +11,4 @@ venv/
 *.sqlite
 *.db
 MEMORY.md
+AGENTS.md
