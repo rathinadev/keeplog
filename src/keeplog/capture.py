@@ -215,14 +215,25 @@ def record_session(mode: str = "full"):
         end_session(session_id)
 
 
+def _strip_ansi(text: str) -> str:
+    import re
+    ansi_re = re.compile(
+        r"\x1b\[[0-9;?]*[a-zA-Z]"
+        r"|\x1b\].*?\x07"
+        r"|\x1b\([0-9a-zA-Z]"
+    )
+    return ansi_re.sub("", text)
+
+
 def _flush_cmd(session_id, seq, command, cwd, mode, output_buf, start_time, exit_code=None):
     if exit_code is None:
         exit_code = -1
-    if seq == 0 and not command:
+    cmd = (command or "").strip()
+    if not cmd:
         return
     duration_ms = int((time.time() - start_time) * 1000)
-    output = output_buf.decode("utf-8", errors="replace")
+    output = _strip_ansi(output_buf.decode("utf-8", errors="replace"))
     save_command(
-        session_id, seq, command or "", cwd or os.getcwd(),
+        session_id, seq, cmd, cwd or os.getcwd(),
         exit_code, duration_ms, mode, output if mode == "full" else None,
     )
