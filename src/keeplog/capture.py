@@ -43,6 +43,22 @@ def _build_rc(shell_path: str):
     return path
 
 
+def _build_fish_rc():
+    hook_path = os.path.join(_hooks_dir(), "fish.sh")
+    user_config = os.path.expanduser("~/.config/fish/config.fish")
+
+    lines = ["set -g __KEEPLOG_READY 0"]
+    if os.path.exists(user_config):
+        lines.append(f"source {user_config}")
+    lines.append(f"source {hook_path}")
+    lines.append("set -g __KEEPLOG_READY 1")
+
+    fd, path = tempfile.mkstemp(prefix="keeplog_fish_", suffix=".fish", text=True)
+    with os.fdopen(fd, "w") as f:
+        f.write("\n".join(lines) + "\n")
+    return path
+
+
 def _build_zsh_zdotdir():
     hook_path = os.path.join(_hooks_dir(), "zsh.sh")
     user_zshrc = os.path.expanduser("~/.zshrc")
@@ -95,6 +111,8 @@ def record_session(mode: str = "full"):
 
     if shell_bin == "zsh":
         zdotdir = _build_zsh_zdotdir()
+    elif shell_bin == "fish":
+        rc_path = _build_fish_rc()
     else:
         rc_path = _build_rc(shell)
 
@@ -111,6 +129,8 @@ def record_session(mode: str = "full"):
         if shell_bin == "zsh":
             os.environ["ZDOTDIR"] = zdotdir
             os.execle(shell, shell, "-i", os.environ)
+        elif shell_bin == "fish":
+            os.execle(shell, shell, "-C", f"source {rc_path}", os.environ)
         else:
             os.execle(shell, shell, "--rcfile", rc_path, os.environ)
         os._exit(1)
