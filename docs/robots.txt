@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rathinadev.github.io/keeplog/sitemap.xml
