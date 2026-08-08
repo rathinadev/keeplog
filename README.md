@@ -126,6 +126,24 @@ Data is stored locally — no cloud, no servers:
 - macOS: `~/Library/Application Support/keeplog/logs.db`
 - Linux: `~/.local/share/keeplog/logs.db`
 
+The database and config file are created with `0600` permissions (owner read/write only).
+
+## Privacy & Security
+
+In **full mode** (the default), keeplog records everything that appears in your terminal — including anything you type or that gets printed back, unfiltered. That means:
+
+- Passwords typed at interactive prompts, API keys, tokens, and secrets pasted or echoed to the terminal **will be saved in plaintext** in `logs.db`.
+- `keeplog export` dumps this data as JSON with no redaction.
+- Anyone with read access to your user account can read `logs.db` directly with `sqlite3`.
+
+If this matters to you:
+
+- Use `keeplog config mode light` to record only the command, directory, exit code, and timestamp — no output — for a safer default.
+- Set a shorter `retention_days` so sensitive data doesn't linger (`keeplog config retention_days 7`).
+- Avoid running secrets-handling commands while a `full`-mode session is active, or switch to `light` mode first.
+
+keeplog does not send data anywhere — everything stays in your local SQLite file — but it does not currently redact secrets on your behalf.
+
 ## Uninstall
 
 ```bash
