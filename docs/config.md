@@ -1,3 +1,7 @@
+---
+description: Configure keeplog's capture mode (full vs light) and data retention period.
+---
+
 # Configuration
 
 ```bash

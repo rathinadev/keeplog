@@ -1,3 +1,7 @@
+---
+description: How to record terminal sessions, search command history, and browse past output with keeplog.
+---
+
 # Usage
 
 ## Record a Session

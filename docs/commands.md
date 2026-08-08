@@ -1,3 +1,7 @@
+---
+description: Full reference of keeplog CLI commands — record, search, recent, get, status, export, clear, config, and more.
+---
+
 # Commands
 
 | Command | Description |

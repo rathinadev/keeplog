@@ -1,3 +1,7 @@
+---
+description: keeplog records every terminal command and its output to a searchable local SQLite database. Install once, search your shell history instantly with fzf.
+---
+
 <div class="hero">
   <div class="hero-content">
     <div class="hero-badge">v0.1.1 • Open Source • MIT</div>

@@ -1,3 +1,7 @@
+---
+description: Set up a local development environment for keeplog and run its test suite.
+---
+
 # Development
 
 ```bash
