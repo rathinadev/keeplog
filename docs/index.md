@@ -63,3 +63,22 @@ keeplog record
 # In another terminal, search while recording
 keeplog search docker
 ```
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "keeplog",
+  "description": "Terminal session logger with full-text search. Records every shell command and output to a local SQLite database.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "macOS, Linux",
+  "url": "https://rathinadev.github.io/keeplog/",
+  "downloadUrl": "https://pypi.org/project/keeplog/",
+  "license": "https://github.com/rathinadev/keeplog/blob/main/LICENSE",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
