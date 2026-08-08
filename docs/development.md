@@ -19,5 +19,6 @@ src/keeplog/
 ├── config.py           # Config file
 └── hooks/
     ├── bash.sh
-    └── zsh.sh
+    ├── zsh.sh
+    └── fish.sh
 ```

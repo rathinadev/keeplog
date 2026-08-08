@@ -40,4 +40,4 @@ keeplog status
 keeplog setup
 ```
 
-Adds a hook to your `.zshrc`/`.bashrc` so every terminal starts recording automatically.
+Adds a hook to your `.zshrc`/`.bashrc`/`config.fish` so every terminal starts recording automatically.

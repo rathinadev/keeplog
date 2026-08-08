@@ -23,7 +23,7 @@ keeplog setup   # auto-start on every terminal
 - **Zero config** — install and forget, always running in background
 - **Two modes** — full (capture output) or light (metadata only)
 - **Lightweight** — no servers, no cloud, no dependencies
-- **Cross-platform** — macOS + Linux, zsh + bash
+- **Cross-platform** — macOS + Linux, zsh + bash + fish
 
 ## Install
 
@@ -47,7 +47,7 @@ keeplog init
 keeplog record
 # (type commands, then exit)
 
-# Set up auto-start (adds to .zshrc/.bashrc)
+# Set up auto-start (adds to .zshrc/.bashrc/config.fish)
 keeplog setup
 # Restart your terminal — recording starts automatically
 
@@ -79,6 +79,14 @@ keeplog status
 | `clear <days>` | Clear data older than N days |
 | `config [key val]` | Get/set configuration |
 | `init` | Initialize database |
+
+## Shell Support
+
+keeplog auto-detects your shell (`$SHELL`) and installs the matching hook:
+
+- **zsh** — via `ZDOTDIR` + `preexec`/`precmd`
+- **bash** — via `PROMPT_COMMAND` + the `DEBUG` trap
+- **fish** — via `fish_preexec`/`fish_postexec` events
 
 ## Configuration
 

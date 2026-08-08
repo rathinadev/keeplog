@@ -45,7 +45,7 @@ keeplog setup
 -   :material-database-search: **Full-Text Search** — instant across everything via SQLite FTS5
 -   :material-code-tags: **No Dependencies** — pure Python, stdlib only
 -   :material-lightning-bolt: **Lightweight** — zero config, install and forget
--   :material-apple: **Cross-Platform** — macOS + Linux, zsh + bash
+-   :material-apple: **Cross-Platform** — macOS + Linux, zsh + bash + fish
 -   :material-github: **Open Source** — MIT license
 
 </div>
