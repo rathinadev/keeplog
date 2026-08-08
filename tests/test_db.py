@@ -1,4 +1,5 @@
 import os
+import stat
 import sys
 import tempfile
 from pathlib import Path
@@ -22,6 +23,11 @@ def _temp_db(monkeypatch):
 
 def test_init_db():
     assert db.DB_PATH.exists()
+
+
+def test_db_has_restrictive_permissions():
+    mode = stat.S_IMODE(db.DB_PATH.stat().st_mode)
+    assert mode == 0o600
 
 
 def test_create_session():

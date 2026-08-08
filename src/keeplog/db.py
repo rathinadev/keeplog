@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import sys
 from pathlib import Path
@@ -17,10 +18,16 @@ DB_PATH = _data_dir() / "logs.db"
 
 def _get_conn() -> sqlite3.Connection:
     _data_dir().mkdir(parents=True, exist_ok=True)
+    is_new = not DB_PATH.exists()
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
+    if is_new:
+        try:
+            os.chmod(DB_PATH, 0o600)
+        except OSError:
+            pass
     return conn
 
 

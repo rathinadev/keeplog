@@ -37,6 +37,10 @@ def save(cfg: dict):
     with open(CONFIG_PATH, "w") as f:
         json.dump(merged, f, indent=2)
         f.write("\n")
+    try:
+        os.chmod(CONFIG_PATH, 0o600)
+    except OSError:
+        pass
 
 
 def get(key: str) -> Any:

@@ -1,3 +1,4 @@
+import stat
 import tempfile
 from pathlib import Path
 
@@ -42,3 +43,9 @@ def test_set_key():
 
 def test_unknown_key():
     assert config.get("nonexistent") is None
+
+
+def test_save_sets_restrictive_permissions():
+    config.save({"mode": "light"})
+    mode = stat.S_IMODE(config.CONFIG_PATH.stat().st_mode)
+    assert mode == 0o600
