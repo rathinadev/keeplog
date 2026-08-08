@@ -54,8 +54,8 @@ keeplog setup
 
 ```bash
 # Record a session
-keelog record
+keeplog record
 
 # In another terminal, search while recording
-keelog search docker
+keeplog search docker
 ```
