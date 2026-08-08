@@ -15,6 +15,7 @@ This project follows [Semantic Versioning](https://semver.org/).
 - CI now tests macOS + Linux across Python 3.9, 3.10, and 3.11 (previously Ubuntu/3.10 only)
 
 ### Fixed
+- **`keeplog clear` crashed with `UnboundLocalError` every time it was run** — a redundant local import of `clear_old` inside the `record` branch shadowed the module-level import for the whole function
 - `logs.db` and `config.json` are now created with `0600` permissions instead of default umask permissions
 - Corrected a `keeplog` typo in the docs quick-start example
 - Added the `favicon.png` referenced by the docs site (was missing)
