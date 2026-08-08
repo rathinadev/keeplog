@@ -39,7 +39,6 @@ def main():
     elif cmd == "record":
         signal.signal(signal.SIGINT, signal.SIG_DFL)
         mode = sys.argv[2] if len(sys.argv) > 2 else get_config("mode")
-        from keeplog.db import clear_old
         clear_old(get_config("retention_days"))
         record_session(mode)
 
