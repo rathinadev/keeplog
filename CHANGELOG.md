@@ -3,7 +3,7 @@
 All notable changes to this project are documented here.
 This project follows [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.0.0] - 2026-08-08
 
 ### Added
 - Fish shell support (`fish_preexec`/`fish_postexec` hooks)

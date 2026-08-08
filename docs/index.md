@@ -4,7 +4,7 @@ description: keeplog records every terminal command and its output to a searchab
 
 <div class="hero">
   <div class="hero-content">
-    <div class="hero-badge">v0.1.1 • Open Source • MIT</div>
+    <div class="hero-badge">v1.0.0 • Open Source • MIT</div>
     <h1>Never lose a command again.</h1>
     <p class="hero-subtitle">
       keeplog records every shell command + output in the background.<br>
