@@ -9,14 +9,15 @@ _keeplog_preexec() {
 }
 
 _keeplog_precmd() {
-    if [[ "$__KEEPLOG_READY" != "1" ]]; then
-        return
-    fi
     local ec=$?
+    if [[ "$__KEEPLOG_READY" != "1" ]]; then
+        return $ec
+    fi
     if [[ -n "$_keeplog_cmd" && -n "$KEEPLOG_CTRL_FD" ]]; then
         print -rnu "$KEEPLOG_CTRL_FD" "E:$ec"$'\n'
         unset _keeplog_cmd
     fi
+    return $ec
 }
 
 autoload -Uz add-zsh-hook

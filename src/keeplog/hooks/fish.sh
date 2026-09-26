@@ -9,11 +9,12 @@ function _keeplog_preexec --on-event fish_preexec
 end
 
 function _keeplog_postexec --on-event fish_postexec
+    set -l ec $status
     if test "$__KEEPLOG_READY" != "1"
         return
     end
     if test -n "$_keeplog_cmd"
-        printf 'E:%s\n' $status >&$KEEPLOG_CTRL_FD 2>/dev/null
+        printf 'E:%s\n' $ec >&$KEEPLOG_CTRL_FD 2>/dev/null
         set -e _keeplog_cmd
     end
 end
