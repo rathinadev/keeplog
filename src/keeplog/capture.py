@@ -1,5 +1,6 @@
 import os
 import pty
+import re
 import select
 import signal
 import struct
@@ -12,6 +13,17 @@ import tempfile
 import shutil
 
 from keeplog.db import create_session, end_session, save_command
+
+_ANSI_RE = re.compile(
+    r"\x1b\[[0-?]*[ -/]*[@-~]"
+    r"|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)"
+    r"|\x1b[PX^_][^\x1b]*\x1b\\"
+    r"|\x1b[()*+][0-9A-Za-z]"
+    r"|\x1b[=>78DEHMNOZc]"
+)
+# zsh's PROMPT_SP: an end-of-line mark, padding spaces, then "\r \r" before each prompt.
+_ZSH_PROMPT_SP_RE = re.compile(r"[%#]? *\r \r\Z")
+_LEADING_CR_RE = re.compile(r"\A\r(?!\n)")
 
 
 def _find_shell() -> str:
@@ -237,13 +249,13 @@ def record_session(mode: str = "full"):
 
 
 def _strip_ansi(text: str) -> str:
-    import re
-    ansi_re = re.compile(
-        r"\x1b\[[0-9;?]*[a-zA-Z]"
-        r"|\x1b\].*?\x07"
-        r"|\x1b\([0-9a-zA-Z]"
-    )
-    return ansi_re.sub("", text)
+    return _ANSI_RE.sub("", text)
+
+
+def _clean_output(raw: bytes) -> str:
+    text = _strip_ansi(raw.decode("utf-8", errors="replace"))
+    text = _LEADING_CR_RE.sub("", text)
+    return _ZSH_PROMPT_SP_RE.sub("", text)
 
 
 def _flush_cmd(session_id, seq, command, cwd, mode, output_buf, start_time, exit_code=None):
@@ -253,7 +265,7 @@ def _flush_cmd(session_id, seq, command, cwd, mode, output_buf, start_time, exit
     if not cmd:
         return
     duration_ms = int((time.time() - start_time) * 1000)
-    output = _strip_ansi(output_buf.decode("utf-8", errors="replace"))
+    output = _clean_output(output_buf)
     save_command(
         session_id, seq, cmd, cwd or os.getcwd(),
         exit_code, duration_ms, mode, output if mode == "full" else None,
