@@ -1,4 +1,5 @@
 import os
+import sqlite3
 import stat
 import sys
 import tempfile
@@ -66,6 +67,58 @@ def test_search():
     results = db.search("build")
     assert len(results) == 1
     assert results[0]["command"] == "docker build ."
+
+
+def test_search_matches_output():
+    sid = db.create_session()
+    db.save_command(sid, 1, "docker ps", "/proj", 0, 50, "full", "b812e0a1f223   postgres:15   Up 2 minutes")
+    db.save_command(sid, 2, "ls", "/home", 0, 10, "full", "file.txt")
+
+    results = db.search("postgres")
+    assert [r["command"] for r in results] == ["docker ps"]
+
+
+def test_search_match_in_command_and_output_appears_once():
+    sid = db.create_session()
+    db.save_command(sid, 1, "docker ps", "/proj", 0, 50, "full", "docker daemon is running")
+    assert len(db.search("docker")) == 1
+
+
+def test_clear_old_removes_output_from_search():
+    sid = db.create_session()
+    db.save_command(sid, 1, "docker ps", "/proj", 0, 50, "full", "postgres:15")
+    conn = db._get_conn()
+    conn.execute("UPDATE commands SET timestamp = datetime('now', '-60 days')")
+    conn.commit()
+    conn.close()
+
+    db.clear_old(30)
+
+    assert db.search("postgres") == []
+    conn = db._get_conn()
+    conn.execute("INSERT INTO output_fts(output_fts) VALUES('integrity-check')")
+    conn.close()
+
+
+def test_existing_database_gets_output_indexed():
+    sid = db.create_session()
+    conn = sqlite3.connect(str(db.DB_PATH))
+    conn.executescript("""
+        DROP TRIGGER output_ai;
+        DROP TRIGGER output_ad;
+        DROP TRIGGER output_au;
+        DROP TABLE output_fts;
+    """)
+    conn.execute(
+        "INSERT INTO commands (session_id, sequence, command, cwd) VALUES (?, 1, 'docker ps', '/proj')",
+        (sid,),
+    )
+    conn.execute("INSERT INTO output (command_id, content) VALUES (last_insert_rowid(), 'postgres:15')")
+    conn.commit()
+    conn.close()
+
+    results = db.search("postgres")
+    assert [r["command"] for r in results] == ["docker ps"]
 
 
 def test_list_recent():

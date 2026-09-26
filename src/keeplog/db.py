@@ -15,6 +15,25 @@ def _data_dir() -> Path:
 
 DB_PATH = _data_dir() / "logs.db"
 
+OUTPUT_FTS_SCHEMA = """
+    CREATE VIRTUAL TABLE IF NOT EXISTS output_fts USING fts5(
+        content, content='output', content_rowid='command_id'
+    );
+
+    CREATE TRIGGER IF NOT EXISTS output_ai AFTER INSERT ON output BEGIN
+        INSERT INTO output_fts(rowid, content) VALUES (new.command_id, new.content);
+    END;
+
+    CREATE TRIGGER IF NOT EXISTS output_ad AFTER DELETE ON output BEGIN
+        INSERT INTO output_fts(output_fts, rowid, content) VALUES('delete', old.command_id, old.content);
+    END;
+
+    CREATE TRIGGER IF NOT EXISTS output_au AFTER UPDATE ON output BEGIN
+        INSERT INTO output_fts(output_fts, rowid, content) VALUES('delete', old.command_id, old.content);
+        INSERT INTO output_fts(rowid, content) VALUES (new.command_id, new.content);
+    END;
+"""
+
 
 def _get_conn() -> sqlite3.Connection:
     _data_dir().mkdir(parents=True, exist_ok=True)
@@ -28,7 +47,22 @@ def _get_conn() -> sqlite3.Connection:
             os.chmod(DB_PATH, 0o600)
         except OSError:
             pass
+    _add_output_search(conn)
     return conn
+
+
+def _add_output_search(conn: sqlite3.Connection):
+    # Databases from older versions have saved output but no index over it.
+    names = {row[0] for row in conn.execute(
+        "SELECT name FROM sqlite_master WHERE name IN ('output', 'output_fts')"
+    )}
+    if "output" in names and "output_fts" not in names:
+        conn.executescript(
+            "BEGIN IMMEDIATE;"
+            + OUTPUT_FTS_SCHEMA
+            + "INSERT INTO output_fts(output_fts) VALUES('rebuild');"
+            + "COMMIT;"
+        )
 
 
 def _db_exists() -> bool:
@@ -85,7 +119,7 @@ def init_db():
             content TEXT,
             FOREIGN KEY (command_id) REFERENCES commands(id)
         );
-    """)
+    """ + OUTPUT_FTS_SCHEMA)
     conn.commit()
     conn.close()
 
@@ -146,13 +180,13 @@ def search(query: str, limit: int = 50) -> list:
     rows = conn.execute(
         """SELECT c.id, c.command, c.cwd, c.exit_code, c.timestamp, c.duration_ms, c.mode,
                   substr(o.content, 1, 200) AS output_preview
-           FROM commands_fts f
-           JOIN commands c ON c.id = f.rowid
+           FROM commands c
            LEFT JOIN output o ON o.command_id = c.id
-           WHERE commands_fts MATCH ?
+           WHERE c.id IN (SELECT rowid FROM commands_fts WHERE commands_fts MATCH ?)
+              OR c.id IN (SELECT rowid FROM output_fts WHERE output_fts MATCH ?)
            ORDER BY c.timestamp DESC
            LIMIT ?""",
-        (query, limit),
+        (query, query, limit),
     ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
