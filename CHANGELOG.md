@@ -3,6 +3,20 @@
 All notable changes to this project are documented here.
 This project follows [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-09-27
+
+**After upgrading, run `keeplog setup` once** to switch to the new auto-start hook. It replaces the old line in place.
+
+### Fixed
+- **tmux and screen panes were not recorded** when tmux was started from a terminal keeplog was already recording. Each pane is now recorded as its own session.
+- **Every command was saved with exit code 0** in zsh, bash and fish
+- bash saved a fake `__keeplog_precmd` command on the first prompt and after every empty Enter, and changed `$?` for prompts that show the last exit status
+- fish's hidden terminal codes and zsh's end-of-line `%` mark were saved as part of command output
+- Shells started without a terminal (for example `zsh -i -c ...`, used by some editors) printed a keeplog error instead of running their command
+
+### Changed
+- Output drawn by full-screen apps (vim, less, htop, tmux itself) is no longer saved
+
 ## [1.1.0] - 2026-09-26
 
 ### Added
