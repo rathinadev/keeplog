@@ -97,6 +97,8 @@ keeplog auto-detects your shell (`$SHELL`) and installs the matching hook:
 - **bash** — via `PROMPT_COMMAND` + the `DEBUG` trap
 - **fish** — via `fish_preexec`/`fish_postexec` events
 
+It works inside **tmux** and **screen**: each pane gets its own terminal, so each pane is recorded as its own session.
+
 ## Configuration
 
 ```bash
@@ -119,7 +121,7 @@ Config file location:
 1. ``keeplog record`` spawns your shell inside a **pseudo-terminal (PTY)**
 2. Every keystroke and output streams through keeplog
 3. **Shell hooks** (preexec/precmd) mark command boundaries
-4. Output is stripped of ANSI escape codes and saved to **SQLite with FTS5**
+4. Output is stripped of ANSI escape codes and saved to **SQLite with FTS5**. Full-screen apps (vim, less, htop, tmux itself) are skipped, since what they draw isn't useful as text
 5. ``keeplog search`` queries the FTS index and pipes results into **fzf**
 
 ```
