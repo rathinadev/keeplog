@@ -9,7 +9,7 @@
 
 Most shell-history tools (Atuin, hishtory) only save the *command*. keeplog records the full output too, via a PTY, so when you find an old command you can see exactly what it printed back then.
 
-![keeplog demo](docs/assets/demo.gif)
+![keeplog demo](https://rathinadev.github.io/keeplog/assets/demo.gif)
 
 ```bash
 pip install keeplog
