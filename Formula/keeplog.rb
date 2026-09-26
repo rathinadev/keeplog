@@ -3,8 +3,8 @@ class Keeplog < Formula
 
   desc "Terminal session logger that full-text searches output, not just commands"
   homepage "https://github.com/rathinadev/keeplog"
-  url "https://files.pythonhosted.org/packages/40/8e/9f940311e8bdb6ee7723a70c4f63ff280a369b4673b87e7e3b7e96a3ebed/keeplog-1.0.0.tar.gz"
-  sha256 "cf633941f443a4dbfc7ce675d8172b43ae138ef963204e6634f1efc78fc604cd"
+  url "https://files.pythonhosted.org/packages/51/8e/96cdac97bf15891c3ac35969962bfb3e9e53f7557efc248953eb94bc6b94/keeplog-1.1.0.tar.gz"
+  sha256 "28b62dd046e38badf8507e30988edba23c5926210c17be22639eadd55f8ce2db"
   license "MIT"
 
   depends_on "python@3.14"
