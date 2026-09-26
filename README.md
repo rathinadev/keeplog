@@ -5,9 +5,9 @@
 [![Python](https://img.shields.io/pypi/pyversions/keeplog?cacheSeconds=0)](https://pypi.org/project/keeplog/)
 [![License](https://img.shields.io/pypi/l/keeplog)](https://github.com/rathinadev/keeplog/blob/main/LICENSE)
 
-**Shell history that remembers what every command printed, not just what you typed.**
+**Search what your terminal printed, not just what you typed.**
 
-Most shell-history tools (Atuin, hishtory) only save the *command*. keeplog records the full output too, via a PTY, so when you find an old command you can see exactly what it printed back then.
+Most shell-history tools (Atuin, hishtory) only save the *command*. keeplog records the full output too, via a PTY, and indexes it. So `keeplog search postgres` finds the `docker ps` you ran last week, because "postgres" appeared in what it printed.
 
 ![keeplog demo](https://rathinadev.github.io/keeplog/assets/demo.gif)
 
@@ -20,7 +20,7 @@ keeplog setup   # auto-start on every terminal
 ## Features
 
 - **PTY capture** — records full output, not just commands
-- **SQLite + FTS5** — instant full-text search across commands and directories
+- **SQLite + FTS5** — instant full-text search across commands, directories, and output
 - **fzf integration** — interactive fuzzy search with preview
 - **Zero config** — install and forget, always running in background
 - **Two modes** — full (capture output) or light (metadata only)

@@ -3,6 +3,13 @@
 All notable changes to this project are documented here.
 This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `keeplog search` now matches command output, not just the command and directory
+- Existing databases are indexed automatically the first time keeplog opens them (about 0.5s for a 140 MB database)
+- Homebrew formula: `brew tap rathinadev/keeplog https://github.com/rathinadev/keeplog && brew install keeplog`
+
 ## [1.0.0] - 2026-08-08
 
 ### Added
