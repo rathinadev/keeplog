@@ -14,9 +14,14 @@ This spawns your shell inside a pseudo-terminal and records everything. Type com
 
 ## Search
 
+Search matches the command, the directory it ran in, and everything it printed (in `full` mode).
+
 ```bash
 # Interactive fzf search
 keeplog search docker
+
+# Matches output too: finds the `docker ps` whose output listed a postgres container
+keeplog search postgres
 
 # Without fzf, it falls back to a list
 keeplog search "npm install"

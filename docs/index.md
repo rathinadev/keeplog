@@ -41,6 +41,14 @@ pip install keeplog
 keeplog setup
 ```
 
+Or with Homebrew:
+
+```bash
+brew tap rathinadev/keeplog https://github.com/rathinadev/keeplog
+brew install keeplog
+keeplog setup
+```
+
 ## Features
 
 <div class="grid cards" markdown>
