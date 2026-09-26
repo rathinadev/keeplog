@@ -9,7 +9,7 @@
 
 Most shell-history tools (Atuin, hishtory) only save the *command*. keeplog records the full output too, via a PTY, and indexes it. So `keeplog search postgres` finds the `docker ps` you ran last week, because "postgres" appeared in what it printed.
 
-![keeplog demo](https://rathinadev.github.io/keeplog/assets/demo.gif)
+![keeplog demo](https://github.com/rathinadev/keeplog/raw/main/docs/assets/demo.gif)
 
 ```bash
 pip install keeplog
