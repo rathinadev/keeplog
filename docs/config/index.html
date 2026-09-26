@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Configuration - keeplog</title>
+  <meta name="description" content="Configure keeplog's capture mode (full vs light) and data retention period.">
+  <link rel="canonical" href="https://rathinadev.github.io/keeplog/config/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="keeplog">
+  <meta property="og:title" content="Configuration - keeplog">
+  <meta property="og:description" content="Configure keeplog's capture mode (full vs light) and data retention period.">
+  <meta property="og:url" content="https://rathinadev.github.io/keeplog/config/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="../assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../"><img src="../assets/logo.svg" alt="" width="28" height="28">keeplog</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../usage/">Usage</a>
+        <a href="../commands/">Commands</a>
+        <a href="../config/" aria-current="page">Configuration</a>
+        <a href="../development/">Development</a>
+        <a href="https://github.com/rathinadev/keeplog">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <h1>Configuration</h1>
+<pre><code><span class="c"># Set mode to light (metadata only, no output)</span>
+keeplog config mode light
+
+<span class="c"># Set retention to 7 days</span>
+keeplog config retention_days 7
+
+<span class="c"># View current config</span>
+keeplog config</code></pre>
+
+    <h2>Capture Modes</h2>
+
+    <h3>Full mode (default)</h3>
+    <p>Records the full terminal session via PTY — commands plus their complete output. This gives you the richest search experience since you can search not just what you typed, but what came back. Uses slightly more disk space.</p>
+
+    <h3>Light mode</h3>
+    <p>Only records the command, directory, exit code, and timestamp — no output is captured. Lighter on disk and faster, but you lose the ability to search results. Useful if you only care about command history with context.</p>
+
+<pre><code><span class="c"># Switch between modes</span>
+keeplog config mode light   <span class="c"># metadata only</span>
+keeplog config mode full    <span class="c"># full PTY capture (default)</span></code></pre>
+
+    <h2>Config File Location</h2>
+    <ul>
+      <li><strong>macOS:</strong> <code>~/Library/Application Support/keeplog/config.json</code></li>
+      <li><strong>Linux:</strong> <code>~/.config/keeplog/config.json</code></li>
+    </ul>
+
+    <h2>Options</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Key</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>mode</code></td><td><code>full</code></td><td>Capture mode (<code>full</code> or <code>light</code>)</td></tr>
+          <tr><td><code>retention_days</code></td><td><code>30</code></td><td>Auto-delete data older than this</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Built by rathinadevan · MIT License</span>
+      <span><a href="https://github.com/rathinadev/keeplog">GitHub</a><a href="https://pypi.org/project/keeplog/">PyPI</a></span>
+    </div>
+  </footer>
+</body>
+</html>

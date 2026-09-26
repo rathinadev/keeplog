@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usage - keeplog</title>
+  <meta name="description" content="How to record terminal sessions, search command history, and browse past output with keeplog.">
+  <link rel="canonical" href="https://rathinadev.github.io/keeplog/usage/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="keeplog">
+  <meta property="og:title" content="Usage - keeplog">
+  <meta property="og:description" content="How to record terminal sessions, search command history, and browse past output with keeplog.">
+  <meta property="og:url" content="https://rathinadev.github.io/keeplog/usage/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="../assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../"><img src="../assets/logo.svg" alt="" width="28" height="28">keeplog</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../usage/" aria-current="page">Usage</a>
+        <a href="../commands/">Commands</a>
+        <a href="../config/">Configuration</a>
+        <a href="../development/">Development</a>
+        <a href="https://github.com/rathinadev/keeplog">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <h1>Usage</h1>
+
+    <h2>Record a Session</h2>
+<pre><code>keeplog record</code></pre>
+    <p>This spawns your shell inside a pseudo-terminal and records everything. Type commands normally, then <code>exit</code> when done.</p>
+
+    <h2>Search</h2>
+    <p>Search matches the command, the directory it ran in, and everything it printed (in <code>full</code> mode).</p>
+<pre><code><span class="c"># Interactive fzf search</span>
+keeplog search docker
+
+<span class="c"># Matches output too: finds the `docker ps` whose output listed a postgres container</span>
+keeplog search postgres
+
+<span class="c"># Without fzf, it falls back to a list</span>
+keeplog search "npm install"</code></pre>
+
+    <h2>Browse</h2>
+<pre><code><span class="c"># Recent commands</span>
+keeplog recent
+
+<span class="c"># Full details of a specific command</span>
+keeplog get 1</code></pre>
+
+    <h2>Stats</h2>
+<pre><code>keeplog status</code></pre>
+
+    <h2>Auto-start</h2>
+<pre><code>keeplog setup</code></pre>
+    <p>Adds a hook to your <code>.zshrc</code>/<code>.bashrc</code>/<code>config.fish</code> so every terminal starts recording automatically.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Built by rathinadevan · MIT License</span>
+      <span><a href="https://github.com/rathinadev/keeplog">GitHub</a><a href="https://pypi.org/project/keeplog/">PyPI</a></span>
+    </div>
+  </footer>
+</body>
+</html>

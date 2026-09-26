@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Commands - keeplog</title>
+  <meta name="description" content="Full reference of keeplog CLI commands — record, search, recent, get, status, export, clear, config, and more.">
+  <link rel="canonical" href="https://rathinadev.github.io/keeplog/commands/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="keeplog">
+  <meta property="og:title" content="Commands - keeplog">
+  <meta property="og:description" content="Full reference of keeplog CLI commands — record, search, recent, get, status, export, clear, config, and more.">
+  <meta property="og:url" content="https://rathinadev.github.io/keeplog/commands/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="../assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../"><img src="../assets/logo.svg" alt="" width="28" height="28">keeplog</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../usage/">Usage</a>
+        <a href="../commands/" aria-current="page">Commands</a>
+        <a href="../config/">Configuration</a>
+        <a href="../development/">Development</a>
+        <a href="https://github.com/rathinadev/keeplog">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <h1>Commands</h1>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Command</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>record</code></td><td>Start recording session</td></tr>
+          <tr><td><code>setup</code></td><td>Add auto-start hook to shell rc</td></tr>
+          <tr><td><code>remove</code></td><td>Remove auto-start hook</td></tr>
+          <tr><td><code>search &lt;query&gt;</code></td><td>Interactive search (fzf if available)</td></tr>
+          <tr><td><code>recent</code></td><td>Show recent commands</td></tr>
+          <tr><td><code>get &lt;id&gt;</code></td><td>Show full command details + output</td></tr>
+          <tr><td><code>status</code></td><td>Show stats</td></tr>
+          <tr><td><code>last</code></td><td>Show last session</td></tr>
+          <tr><td><code>export</code></td><td>Export all data as JSON</td></tr>
+          <tr><td><code>clear &lt;days&gt;</code></td><td>Clear data older than N days</td></tr>
+          <tr><td><code>config [key val]</code></td><td>Get/set configuration</td></tr>
+          <tr><td><code>init</code></td><td>Initialize database</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Built by rathinadevan · MIT License</span>
+      <span><a href="https://github.com/rathinadev/keeplog">GitHub</a><a href="https://pypi.org/project/keeplog/">PyPI</a></span>
+    </div>
+  </footer>
+</body>
+</html>

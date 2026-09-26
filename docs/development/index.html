@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Development - keeplog</title>
+  <meta name="description" content="Set up a local development environment for keeplog and run its test suite.">
+  <link rel="canonical" href="https://rathinadev.github.io/keeplog/development/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="keeplog">
+  <meta property="og:title" content="Development - keeplog">
+  <meta property="og:description" content="Set up a local development environment for keeplog and run its test suite.">
+  <meta property="og:url" content="https://rathinadev.github.io/keeplog/development/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="../assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="../"><img src="../assets/logo.svg" alt="" width="28" height="28">keeplog</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="../usage/">Usage</a>
+        <a href="../commands/">Commands</a>
+        <a href="../config/">Configuration</a>
+        <a href="../development/" aria-current="page">Development</a>
+        <a href="https://github.com/rathinadev/keeplog">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <h1>Development</h1>
+<pre><code>git clone https://github.com/rathinadev/keeplog
+cd keeplog
+pip install -e .
+python -m pytest tests/</code></pre>
+
+    <h2>Project Structure</h2>
+<pre><code>src/keeplog/
+├── cli.py              <span class="c"># CLI dispatcher</span>
+├── db.py               <span class="c"># SQLite + FTS5 storage</span>
+├── capture.py          <span class="c"># PTY capture loop</span>
+├── install.py          <span class="c"># Auto-start setup</span>
+├── search.py           <span class="c"># fzf integration</span>
+├── config.py           <span class="c"># Config file</span>
+└── hooks/
+    ├── bash.sh
+    ├── zsh.sh
+    └── fish.sh</code></pre>
+
+    <h2>Docs Site</h2>
+    <p>This site is plain HTML and CSS in <code>docs/</code>, with no build step. Every push to <code>main</code> deploys it to GitHub Pages. To preview locally:</p>
+<pre><code>python -m http.server --directory docs</code></pre>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Built by rathinadevan · MIT License</span>
+      <span><a href="https://github.com/rathinadev/keeplog">GitHub</a><a href="https://pypi.org/project/keeplog/">PyPI</a></span>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>keeplog</title>
+  <meta name="description" content="keeplog records every terminal command and its output to a searchable local SQLite database. Install once, search your shell history instantly with fzf.">
+  <link rel="canonical" href="https://rathinadev.github.io/keeplog/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="keeplog">
+  <meta property="og:title" content="keeplog">
+  <meta property="og:description" content="keeplog records every terminal command and its output to a searchable local SQLite database. Install once, search your shell history instantly with fzf.">
+  <meta property="og:url" content="https://rathinadev.github.io/keeplog/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="site.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "keeplog",
+    "description": "Terminal session logger with full-text search. Records every shell command and output to a local SQLite database.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "macOS, Linux",
+    "url": "https://rathinadev.github.io/keeplog/",
+    "downloadUrl": "https://pypi.org/project/keeplog/",
+    "license": "https://github.com/rathinadev/keeplog/blob/main/LICENSE",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./" aria-current="page"><img src="assets/logo.svg" alt="" width="28" height="28">keeplog</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="usage/">Usage</a>
+        <a href="commands/">Commands</a>
+        <a href="config/">Configuration</a>
+        <a href="development/">Development</a>
+        <a href="https://github.com/rathinadev/keeplog">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <section class="hero">
+      <div class="hero-badge">v1.0.0 • Open Source • MIT</div>
+      <h1>Never lose a command again.</h1>
+      <p class="hero-subtitle">keeplog records every shell command and its output in the background. Search what you typed and what it printed.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#install">Get Started</a>
+        <a class="btn btn-ghost" href="https://github.com/rathinadev/keeplog">GitHub</a>
+      </div>
+      <figure class="terminal">
+        <div class="terminal-bar" aria-hidden="true">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">keeplog search docker</span>
+        </div>
+        <img src="assets/demo.gif" width="1200" height="650" alt="Demo: keeplog recent lists past commands, then keeplog search docker opens fzf with each command's saved output in a preview pane.">
+      </figure>
+    </section>
+
+    <h2 id="install">Install</h2>
+<pre><code>pip install keeplog
+keeplog setup</code></pre>
+
+    <p>Or with Homebrew:</p>
+<pre><code>brew tap rathinadev/keeplog https://github.com/rathinadev/keeplog
+brew install keeplog
+keeplog setup</code></pre>
+
+    <h2>Features</h2>
+    <ul class="cards">
+      <li><strong>PTY Capture</strong>Records full output, not just commands.</li>
+      <li><strong>Full-Text Search</strong>Instant across commands, directories, and output via SQLite FTS5.</li>
+      <li><strong>No Dependencies</strong>Pure Python, stdlib only.</li>
+      <li><strong>Lightweight</strong>Zero config, install and forget.</li>
+      <li><strong>Cross-Platform</strong>macOS + Linux, zsh + bash + fish.</li>
+      <li><strong>Open Source</strong>MIT license.</li>
+    </ul>
+
+    <h2>Quick Start</h2>
+<pre><code><span class="c"># Record a session</span>
+keeplog record
+
+<span class="c"># In another terminal, search while recording</span>
+keeplog search docker</code></pre>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>Built by rathinadevan · MIT License</span>
+      <span><a href="https://github.com/rathinadev/keeplog">GitHub</a><a href="https://pypi.org/project/keeplog/">PyPI</a></span>
+    </div>
+  </footer>
+</body>
+</html>
