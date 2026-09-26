@@ -88,3 +88,32 @@ def test_shell_rc_paths(monkeypatch):
 def test_hook_line_contains_keeplog_active():
     assert "KEEPLOG_ACTIVE" in install._hook_line("bash")
     assert "KEEPLOG_ACTIVE" in install._hook_line("fish")
+
+
+def test_hook_line_compares_against_current_terminal():
+    assert '"$KEEPLOG_ACTIVE" != "$(tty)"' in install._hook_line("bash")
+    assert '"$KEEPLOG_ACTIVE" != (tty)' in install._hook_line("fish")
+
+
+OLD_HOOK = 'if [[ -z "$KEEPLOG_ACTIVE" ]]; then export KEEPLOG_ACTIVE=1; exec keeplog record; fi\n'
+
+
+def test_setup_hook_upgrades_old_hook_in_place(tmp_rc, capsys):
+    tmp_rc.write_text("# before\n" + OLD_HOOK + "# after\n")
+    install.setup_hook()
+    out = capsys.readouterr().out
+
+    assert "Updated" in out
+    assert tmp_rc.read_text() == "# before\n" + install._hook_line("bash").strip() + "\n# after\n"
+
+
+def test_setup_hook_after_upgrade_is_idempotent(tmp_rc, capsys):
+    tmp_rc.write_text(OLD_HOOK)
+    install.setup_hook()
+    upgraded = tmp_rc.read_text()
+    capsys.readouterr()
+
+    install.setup_hook()
+
+    assert "Already set up" in capsys.readouterr().out
+    assert tmp_rc.read_text() == upgraded

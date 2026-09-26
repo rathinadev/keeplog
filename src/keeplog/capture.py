@@ -21,6 +21,7 @@ _ANSI_RE = re.compile(
     r"|\x1b[()*+][0-9A-Za-z]"
     r"|\x1b[=>78DEHMNOZc]"
 )
+_ALT_SCREEN_RE = re.compile(rb"\x1b\[\?(?:1049|1047|47)([hl])")
 # zsh's PROMPT_SP: an end-of-line mark, padding spaces, then "\r \r" before each prompt.
 _ZSH_PROMPT_SP_RE = re.compile(r"[%#]? *\r \r\Z")
 _LEADING_CR_RE = re.compile(r"\A\r(?!\n)")
@@ -134,7 +135,7 @@ def record_session(mode: str = "full"):
         os.environ["KEEPLOG_CTRL_FD"] = str(ctrl_w)
         os.environ["KEEPLOG_SESSION_ID"] = str(session_id)
         os.environ["KEEPLOG_MODE"] = mode
-        os.environ["KEEPLOG_ACTIVE"] = "1"
+        os.environ["KEEPLOG_ACTIVE"] = os.ttyname(0)
         os.environ["SHELL_SESSIONS_DISABLE"] = "1"
         os.close(ctrl_r)
 
@@ -162,6 +163,7 @@ def record_session(mode: str = "full"):
         tty.setraw(sys.stdin.fileno())
 
         output_buf = bytearray()
+        in_alt_screen = False
         seq = 0
         current_cmd = None
         current_cwd = ""
@@ -181,7 +183,8 @@ def record_session(mode: str = "full"):
                     break
                 if not data:
                     break
-                output_buf.extend(data)
+                kept, in_alt_screen = _drop_alt_screen(data, in_alt_screen)
+                output_buf.extend(kept)
                 try:
                     sys.stdout.buffer.write(data)
                     sys.stdout.buffer.flush()
@@ -222,6 +225,7 @@ def record_session(mode: str = "full"):
                         current_cwd = os.getcwd()
                         current_start = time.time()
                         output_buf = bytearray()
+                        in_alt_screen = False
                     elif line.startswith("E:") and current_cmd is not None:
                         try:
                             ec = int(line[2:])
@@ -235,6 +239,7 @@ def record_session(mode: str = "full"):
                         seq += 1
                         current_cmd = None
                         output_buf = bytearray()
+                        in_alt_screen = False
 
     finally:
         termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old_term)
@@ -250,6 +255,20 @@ def record_session(mode: str = "full"):
 
 def _strip_ansi(text: str) -> str:
     return _ANSI_RE.sub("", text)
+
+
+def _drop_alt_screen(data: bytes, in_alt: bool) -> tuple:
+    """Remove output drawn on the alternate screen (tmux, vim, less, htop)."""
+    kept = bytearray()
+    pos = 0
+    for m in _ALT_SCREEN_RE.finditer(data):
+        if not in_alt:
+            kept += data[pos:m.start()]
+        in_alt = m.group(1) == b"h"
+        pos = m.end()
+    if not in_alt:
+        kept += data[pos:]
+    return bytes(kept), in_alt
 
 
 def _clean_output(raw: bytes) -> str:

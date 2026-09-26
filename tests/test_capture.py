@@ -1,4 +1,4 @@
-from keeplog.capture import _clean_output, _strip_ansi
+from keeplog.capture import _clean_output, _drop_alt_screen, _strip_ansi
 
 
 def test_strip_ansi_colors():
@@ -32,6 +32,18 @@ def test_strip_ansi_osc_terminated_by_st():
 
 def test_strip_ansi_private_csi_and_two_byte_escapes():
     assert _strip_ansi("\x1b=\x1b[>c\x1b[>qok\x1b>") == "ok"
+
+
+def test_drop_alt_screen_within_one_chunk():
+    data = b"before\x1b[?1049hFULLSCREEN\x1b[?1049lafter"
+    assert _drop_alt_screen(data, False) == (b"beforeafter", False)
+
+
+def test_drop_alt_screen_across_chunks():
+    kept1, state = _drop_alt_screen(b"start\x1b[?1049hjunk", False)
+    kept2, state = _drop_alt_screen(b"more junk", state)
+    kept3, state = _drop_alt_screen(b"junk\x1b[?1049lend", state)
+    assert (kept1, kept2, kept3, state) == (b"start", b"", b"end", False)
 
 
 def test_clean_output_removes_zsh_prompt_sp():

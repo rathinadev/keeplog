@@ -24,10 +24,13 @@ def _needs_path_fix() -> tuple:
     return True, bin_dir
 
 
+# KEEPLOG_ACTIVE holds the terminal keeplog is recording. Comparing it to the
+# current terminal (not just checking it is set) lets tmux/screen panes, which
+# inherit the variable but get their own terminal, start their own recording.
 def _hook_line(shell: str) -> str:
     if shell == "fish":
-        return '\nif test -z "$KEEPLOG_ACTIVE"; set -gx KEEPLOG_ACTIVE 1; exec keeplog record; end\n'
-    return '\nif [[ -z "$KEEPLOG_ACTIVE" ]]; then export KEEPLOG_ACTIVE=1; exec keeplog record; fi\n'
+        return '\nif isatty stdin; and isatty stdout; and test "$KEEPLOG_ACTIVE" != (tty); exec keeplog record; end\n'
+    return '\nif [[ -t 0 && -t 1 && "$KEEPLOG_ACTIVE" != "$(tty)" ]]; then exec keeplog record; fi\n'
 
 
 def _path_line(shell: str, bin_dir: str) -> str:
@@ -39,40 +42,48 @@ def _path_line(shell: str, bin_dir: str) -> str:
 def setup_hook():
     shell = _current_shell()
     rc = _shell_rc()
-    lines = []
+    hook = _hook_line(shell).strip()
 
-    needs_fix, bin_dir = _needs_path_fix()
-    if needs_fix and bin_dir:
-        pl = _path_line(shell, bin_dir)
-        if os.path.exists(rc):
-            with open(rc) as f:
-                content = f.read()
-            if bin_dir not in content:
-                lines.append(pl)
-        else:
-            lines.append(pl.strip())
-
+    content = ""
     if os.path.exists(rc):
         with open(rc) as f:
             content = f.read()
-        if "KEEPLOG_ACTIVE" in content and not needs_fix:
-            print(f"Already set up in {rc}")
-            return
-        with open(rc, "a") as f:
-            for line in lines:
-                f.write(line + "\n")
-            if "KEEPLOG_ACTIVE" not in content:
-                f.write(_hook_line(shell))
-    else:
-        with open(rc, "w") as f:
-            for line in lines:
-                f.write(line + "\n")
-            f.write(_hook_line(shell).strip() + "\n")
+    lines = content.splitlines(keepends=True)
+    hook_lines = [line for line in lines if "KEEPLOG_ACTIVE" in line]
 
-    print(f"Setup complete in {rc}")
-    if needs_fix and bin_dir:
+    needs_fix, bin_dir = _needs_path_fix()
+    add_path = bool(needs_fix and bin_dir and bin_dir not in content)
+    path_line = _path_line(shell, bin_dir).strip() + "\n" if add_path else ""
+
+    if [line.strip() for line in hook_lines] == [hook] and not add_path:
+        print(f"Already set up in {rc}")
+        return
+
+    if hook_lines:
+        new_lines, replaced = [], False
+        for line in lines:
+            if "KEEPLOG_ACTIVE" not in line:
+                new_lines.append(line)
+            elif not replaced:
+                new_lines.append(path_line + hook + "\n")
+                replaced = True
+        new_content = "".join(new_lines)
+    else:
+        new_content = content
+        if new_content and not new_content.endswith("\n"):
+            new_content += "\n"
+        new_content += ("\n" if new_content else "") + path_line + hook + "\n"
+
+    with open(rc, "w") as f:
+        f.write(new_content)
+
+    if hook_lines:
+        print(f"Updated the keeplog hook in {rc}")
+    else:
+        print(f"Setup complete in {rc}")
+        print("  Auto-start hook added")
+    if add_path:
         print(f"  Added {bin_dir} to PATH")
-    print(f"  Auto-start hook added")
     if shell != "fish":
         print("Restart your terminal or run: source " + rc)
 
