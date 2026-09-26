@@ -5,9 +5,11 @@
 [![Python](https://img.shields.io/pypi/pyversions/keeplog?cacheSeconds=0)](https://pypi.org/project/keeplog/)
 [![License](https://img.shields.io/pypi/l/keeplog)](https://github.com/rathinadev/keeplog/blob/main/LICENSE)
 
-**Terminal session logger with full-text search.**
+**Shell history that remembers what every command printed, not just what you typed.**
 
-Records every command + output in your terminal, saves to SQLite, and lets you search instantly.
+Most shell-history tools (Atuin, hishtory) only save the *command*. keeplog records the full output too, via a PTY, so when you find an old command you can see exactly what it printed back then.
+
+![keeplog demo](docs/assets/demo.gif)
 
 ```bash
 pip install keeplog
@@ -18,7 +20,7 @@ keeplog setup   # auto-start on every terminal
 ## Features
 
 - **PTY capture** — records full output, not just commands
-- **SQLite + FTS5** — instant full-text search across everything
+- **SQLite + FTS5** — instant full-text search across commands and directories
 - **fzf integration** — interactive fuzzy search with preview
 - **Zero config** — install and forget, always running in background
 - **Two modes** — full (capture output) or light (metadata only)
@@ -29,6 +31,13 @@ keeplog setup   # auto-start on every terminal
 
 ```bash
 pip install keeplog
+```
+
+Or with Homebrew (macOS/Linux):
+
+```bash
+brew tap rathinadev/keeplog https://github.com/rathinadev/keeplog
+brew install keeplog
 ```
 
 Or one-liner (installs pip package + sets up auto-start):
