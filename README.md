@@ -37,6 +37,7 @@ Or with Homebrew (macOS/Linux):
 
 ```bash
 brew tap rathinadev/keeplog https://github.com/rathinadev/keeplog
+brew trust rathinadev/keeplog   # Homebrew 7+ asks you to trust third-party taps once
 brew install keeplog
 ```
 
