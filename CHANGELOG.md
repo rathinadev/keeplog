@@ -3,6 +3,11 @@
 All notable changes to this project are documented here.
 This project follows [Semantic Versioning](https://semver.org/).
 
+## [1.1.2] - 2026-09-30
+
+### Changed
+- Officially supports Python 3.9 through 3.14. CI now tests all of them on macOS and Linux, plus the Python 3.15 release candidate as an early warning. No code changes were needed.
+
 ## [1.1.1] - 2026-09-27
 
 **After upgrading, run `keeplog setup` once** to switch to the new auto-start hook. It replaces the old line in place.
