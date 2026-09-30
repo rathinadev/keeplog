@@ -15,7 +15,7 @@ python -m pytest tests/
 
 - **No new runtime dependencies** unless there's a strong reason — keeplog's "no dependencies" promise is a feature.
 - **Cross-platform**: code must work on both macOS and Linux, and across zsh, bash, and fish. If you touch shell-hook logic (`src/keeplog/hooks/`), test it in the shell you changed.
-- **Tests**: add or update tests under `tests/` for any behavior change. CI runs on macOS + Linux across Python 3.9–3.11.
+- **Tests**: add or update tests under `tests/` for any behavior change. CI runs on macOS + Linux across Python 3.9–3.14, plus the upcoming 3.15 as an early-warning check that doesn't block merges.
 - **Small commits**: one logical change per commit, with a clear message. Unrelated changes go in separate commits/PRs.
 - **Lint**: `flake8` runs in CI with a relaxed `max-line-length=127`; keep it passing.
 

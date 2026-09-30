@@ -12,17 +12,27 @@ permissions:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.prerelease }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        prerelease: [false]
+        include:
+          - os: ubuntu-latest
+            python-version: "3.15"
+            prerelease: true
+          - os: macos-latest
+            python-version: "3.15"
+            prerelease: true
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        allow-prereleases: ${{ matrix.prerelease }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
