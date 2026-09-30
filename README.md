@@ -1,8 +1,8 @@
 # keeplog
 
 [![CI](https://github.com/rathinadev/keeplog/actions/workflows/python-app.yml/badge.svg)](https://github.com/rathinadev/keeplog/actions/workflows/python-app.yml)
-[![PyPI](https://img.shields.io/pypi/v/keeplog)](https://pypi.org/project/keeplog/)
-[![Python](https://img.shields.io/pypi/pyversions/keeplog?cacheSeconds=0)](https://pypi.org/project/keeplog/)
+[![PyPI](https://img.shields.io/pypi/v/keeplog?label=pypi)](https://pypi.org/project/keeplog/)
+[![Python](https://img.shields.io/pypi/pyversions/keeplog?label=python)](https://pypi.org/project/keeplog/)
 [![License](https://img.shields.io/pypi/l/keeplog)](https://github.com/rathinadev/keeplog/blob/main/LICENSE)
 
 **Search what your terminal printed, not just what you typed.**
